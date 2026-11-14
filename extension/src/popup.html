@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { width: 240px; margin: 0; padding: 14px; font: 14px system-ui, sans-serif; display: flex; flex-direction: column; gap: 10px; }
+      button { padding: 8px 10px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; font: inherit; cursor: pointer; }
+      button.secondary { background: #e5e7eb; color: #111827; }
+      p { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <p id="status">…</p>
+    <button id="primary"></button>
+    <button id="signout" class="secondary" hidden>Çıkış yap</button>
+    <script src="popup.js"></script>
+  </body>
+</html>

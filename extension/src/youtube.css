@@ -1,0 +1,47 @@
+.supsf-w {
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 3px;
+}
+.supsf-w:hover {
+  background: rgba(250, 204, 21, 0.45);
+  color: #fff;
+}
+.supsf-popup {
+  position: absolute;
+  z-index: 2147483647;
+  min-width: 140px;
+  max-width: 260px;
+  padding: 10px 12px;
+  background: #111827;
+  color: #fff;
+  font: 14px/1.4 system-ui, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+  transform: translate(-50%, -100%);
+}
+.supsf-popup .supsf-word {
+  font-weight: 600;
+}
+.supsf-popup .supsf-pos {
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+.supsf-popup .supsf-meaning {
+  margin: 4px 0 8px;
+}
+.supsf-popup button {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: #2563eb;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.supsf-popup button[disabled] {
+  background: #16a34a;
+  cursor: default;
+}

@@ -1,0 +1,10 @@
+name = "kelimo"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kelimo"
+database_id = "fce72430-2cf7-49b8-85c9-d6e93e6d172b"
+migrations_dir = "migrations"

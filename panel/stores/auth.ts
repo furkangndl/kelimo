@@ -31,11 +31,15 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.user = null;
       localStorage.removeItem(TOKEN_KEY);
+      window.postMessage({ type: 'SUPSF_LOGOUT' }, window.location.origin);
     },
     /** Hands the token to the browser extension's content script running on this origin. */
     notifyExtension() {
+      const send = () => window.postMessage({ type: 'SUPSF_AUTH', token: this.token }, window.location.origin);
       if (this.token) {
-        window.postMessage({ type: 'SUPSF_AUTH', token: this.token }, window.location.origin);
+        send();
+        // The extension's content script may attach slightly after the page boots.
+        setTimeout(send, 1000);
       }
     },
     async login(email: string, password: string) {

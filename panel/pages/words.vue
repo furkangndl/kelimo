@@ -63,7 +63,7 @@ onMounted(async () => {
 <template>
   <div class="max-w-3xl mx-auto p-4 flex flex-col gap-4">
     <header class="flex items-center justify-between">
-      <h1 class="text-xl font-semibold">Kelime Defteri</h1>
+      <h1 class="text-xl font-semibold">Kelimo</h1>
       <div class="flex items-center gap-3 text-sm">
         <span>{{ auth.user?.name }}</span>
         <PrimeButton label="Çıkış" severity="secondary" size="small" @click="logout" />

@@ -1,12 +1,17 @@
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
+  nitro: { preset: 'cloudflare_pages' },
   runtimeConfig: {
+    azureTranslatorKey: '',
+    azureTranslatorRegion: 'global',
+    azureTranslatorEndpoint: 'https://api.cognitive.microsofttranslator.com',
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:8000/api',
+      apiBase: process.env.API_BASE_URL || '/api',
     },
   },
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-primevue', '@pinia/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-primevue', '@pinia/nuxt', 'nitro-cloudflare-dev'],
+  tailwindcss: { cssPath: '~/assets/css/tailwind.css' },
   primevue: {
     options: { ripple: true },
     components: {
@@ -17,6 +22,6 @@ export default defineNuxtConfig({
   },
   css: ['primeicons/primeicons.css', 'primevue/resources/themes/aura-light-blue/theme.css'],
   app: {
-    head: { title: 'Kelime Defteri' },
+    head: { title: 'Kelimo' },
   },
 });
