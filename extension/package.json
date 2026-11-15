@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "build:dev": "OUT_DIR=dist-dev API_BASE_URL=http://localhost:3000/api PANEL_URL=http://localhost:3000 node build.mjs",
+    "build:prod": "OUT_DIR=dist-prod API_BASE_URL=https://kelimo.net/api PANEL_URL=https://kelimo.net node build.mjs",
+    "zip:prod": "yarn build:prod && rm -f kelimo-extension.zip && cd dist-prod && zip -qr ../kelimo-extension.zip ."
   }
 }

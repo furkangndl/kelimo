@@ -1,0 +1,170 @@
+/* Fonts: drop the files into /public/fonts, add @font-face rules here, then set these two variables. */
+:root {
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Palette: #2a374b, #586c80, #a1b1be, #dfe6ec (+ a lighter tint for cards) */
+  --paper: #dfe6ec;
+  --card: #f3f6f9;
+  --ink: #2a374b;
+  --muted: #586c80;
+  --marker: #a1b1be;
+
+  --bulma-family-primary: var(--font-body);
+  --bulma-radius: 0.5rem;
+  --bulma-primary-h: 215deg;
+  --bulma-primary-s: 28%;
+  --bulma-primary-l: 23%;
+  --teal: var(--ink);
+  --amber: var(--marker);
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Flat "index card" look: ink outline + hard shadow, no blur, no gradients. */
+.ink-box {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 0.75rem;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.input,
+.textarea {
+  border: 2px solid var(--ink);
+  background: var(--card);
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.input:focus {
+  border-color: var(--teal);
+  box-shadow: 3px 3px 0 var(--teal);
+}
+
+.button {
+  border: 2px solid var(--ink);
+  font-weight: 600;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.button.is-primary {
+  background: var(--teal);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.button.is-light {
+  background: var(--card);
+  color: var(--ink);
+}
+
+.marker {
+  background: linear-gradient(transparent 58%, var(--amber) 58%, var(--amber) 92%, transparent 92%);
+  padding: 0 0.15em;
+}
+
+.has-text-muted {
+  color: var(--muted) !important;
+}
+
+a.link {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Word cards */
+.word-card {
+  perspective: 900px;
+  height: 11rem;
+  cursor: pointer;
+  will-change: transform;
+}
+
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-face.back {
+  transform: rotateY(180deg);
+  background: var(--amber);
+}
+
+.card-word {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.card-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.card-face.back .card-hint {
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+.card-del {
+  align-self: flex-end;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 var(--ink);
+}

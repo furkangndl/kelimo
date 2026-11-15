@@ -49,12 +49,15 @@ export const useAuthStore = defineStore('auth', {
       });
       this.setSession(token, user);
     },
-    async register(payload: { name: string; email: string; password: string; native_lang: string }) {
+    async register(payload: { email: string; password: string }) {
       const { token, user } = await useApi()<{ token: string; user: AuthUser }>('/register', {
         method: 'POST',
         body: payload,
       });
       this.setSession(token, user);
+    },
+    async setNativeLang(native_lang: 'tr' | 'en') {
+      this.user = await useApi()<AuthUser>('/me', { method: 'PATCH', body: { native_lang } });
     },
     async logout() {
       try {

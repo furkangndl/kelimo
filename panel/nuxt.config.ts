@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
+  experimental: { appManifest: false },
   nitro: { preset: 'cloudflare_pages' },
   runtimeConfig: {
     azureTranslatorKey: '',
@@ -10,18 +11,14 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL || '/api',
     },
   },
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-primevue', '@pinia/nuxt', 'nitro-cloudflare-dev'],
-  tailwindcss: { cssPath: '~/assets/css/tailwind.css' },
-  primevue: {
-    options: { ripple: true },
-    components: {
-      prefix: 'Prime',
-      include: ['Button', 'InputText', 'Password', 'Dropdown', 'DataTable', 'Column', 'Message', 'IconField', 'InputIcon', 'Paginator'],
-    },
-    cssLayerOrder: 'tailwind-base, primevue, tailwind-utilities',
-  },
-  css: ['primeicons/primeicons.css', 'primevue/resources/themes/aura-light-blue/theme.css'],
+  modules: ['@pinia/nuxt', 'nitro-cloudflare-dev'],
+  css: ['bulma/css/bulma.min.css', '~/assets/css/main.css'],
   app: {
-    head: { title: 'Kelimo' },
+    head: {
+      title: 'Kelimo',
+      htmlAttrs: { lang: 'tr', 'data-theme': 'light' },
+      meta: [{ name: 'theme-color', content: '#dfe6ec' }],
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    },
   },
 });
