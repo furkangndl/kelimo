@@ -52,6 +52,20 @@ function saveWord(word, meaning) {
   return api('/words', { method: 'POST', body: JSON.stringify({ word, meaning }) });
 }
 
+function savedWords() {
+  return api('/words/all');
+}
+
+async function removeWords(ids) {
+  for (const id of ids) {
+    const result = await api(`/words/${id}`, { method: 'DELETE' });
+    if (!result.ok) {
+      return result;
+    }
+  }
+  return { ok: true, data: null };
+}
+
 function openLogin() {
   return ext.tabs.create({ url: `${panelUrl}/login?ext=1` });
 }
@@ -158,6 +172,10 @@ ext.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return respond(translate(message.word, message.sentence));
     case 'SAVE':
       return respond(saveWord(message.word, message.meaning));
+    case 'SAVED_LIST':
+      return respond(savedWords());
+    case 'REMOVE':
+      return respond(removeWords(message.ids));
     case 'LOGIN':
       return respond(openLogin().then(() => ({ ok: true })));
     case 'STATUS':

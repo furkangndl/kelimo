@@ -26,7 +26,7 @@ const commonPrefixLength = (a: string, b: string): number => {
 
 export const senseFor = async (event: H3Event, word: string, sentence: string | null, from: string, to: string): Promise<Sense> => {
   const db = useDb(event);
-  const key = await cacheKey([word, sentence ?? '', from, to]);
+  const key = await cacheKey(['v3', word, sentence ?? '', from, to]);
   const now = Math.floor(Date.now() / 1000);
 
   const cached = await db.prepare('SELECT value FROM translation_cache WHERE key = ? AND created_at > ?').bind(key, now - CACHE_TTL_SECONDS).first<{ value: string }>();
@@ -47,21 +47,69 @@ const cacheKey = async (parts: string[]): Promise<string> => {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
+const sameWord = (a: string, b: string): boolean => a.toLocaleLowerCase() === b.toLocaleLowerCase();
+const isPhrase = (text: string): boolean => /\s/.test(text.trim());
+const isSuffixEntry = (meaning: string): boolean => /(^|\s)-/.test(meaning);
+
+/** Dictionary meanings joined for words whose context could not pick a single one. */
+const topCandidates = (candidates: Candidate[]): Sense => {
+  const seen = new Set<string>();
+  const meanings: string[] = [];
+  for (const candidate of candidates) {
+    const key = candidate.meaning.toLocaleLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      meanings.push(candidate.meaning);
+    }
+    if (meanings.length === 3) {
+      break;
+    }
+  }
+  return { meaning: meanings.join(', '), pos: candidates[0].pos };
+};
+
+/**
+ * Meaning of a word in its sentence.
+ *
+ * The dictionary supplies clean base-form candidates; the sentence translation's word alignment is only trusted to
+ * choose between them (aligned target words are often inflected suffix pieces, so they are never shown as the meaning).
+ */
 const resolveSense = async (event: H3Event, word: string, sentence: string | null, from: string, to: string): Promise<Sense> => {
-  const candidates = await lookup(event, word, from, to);
+  if (isPhrase(word)) {
+    const translated = (await translate(event, word, from, to)).text.toLocaleLowerCase(to);
+    return { meaning: translated && !sameWord(translated, word) ? translated : null, pos: null };
+  }
+
+  // The service sometimes "translates" a word to itself (loanwords, slang) or returns bare suffixes; neither is a meaning.
+  const candidates = (await lookup(event, word, from, to)).filter(
+    (candidate) => !sameWord(candidate.meaning, word) && !isSuffixEntry(candidate.meaning),
+  );
   const aligned = sentence ? await alignedWords(event, word, sentence, from, to) : [];
 
   const best = bestCandidate(candidates, aligned);
   if (best) {
     return best;
   }
-  if (aligned.length > 0) {
-    return { meaning: aligned[0], pos: null };
+
+  const alone = (await translate(event, word, from, to)).text.toLocaleLowerCase(to);
+  const hasAlone = alone !== '' && !sameWord(alone, word);
+  const pos = candidates[0]?.pos ?? null;
+
+  if (hasAlone) {
+    const exact = candidates.find((candidate) => sameWord(candidate.meaning, alone));
+    if (exact) {
+      return exact;
+    }
+    // e.g. "En yeni" for "newest" where the dictionary only has the base form "yeni".
+    if (candidates.some((candidate) => alone.includes(candidate.meaning.toLocaleLowerCase(to)))) {
+      return { meaning: alone, pos };
+    }
   }
+
   if (candidates.length > 0) {
-    return candidates[0];
+    return topCandidates(candidates);
   }
-  return { meaning: (await translate(event, word, from, to)).text, pos: null };
+  return { meaning: hasAlone ? alone : null, pos: null };
 };
 
 const lookup = async (event: H3Event, word: string, from: string, to: string): Promise<Candidate[]> => {
